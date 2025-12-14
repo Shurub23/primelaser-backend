@@ -21,9 +21,21 @@ const ContactSchema = new mongoose.Schema({
 const Contact = mongoose.model("Contact", ContactSchema);
 
 app.post("/contact", async (req, res) => {
-  const contact = new Contact(req.body);
-  await contact.save();
-  res.json({ success: true });
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: "Date lipsă" });
+  }
+
+  try {
+    const contact = new Contact({ name, email, message });
+    await contact.save();
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Eroare server" });
+  }
 });
 
+
 app.listen(5000, () => console.log("Server pornit pe port 5000"));
+
