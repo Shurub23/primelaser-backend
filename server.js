@@ -20,11 +20,20 @@ const ContactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model("Contact", ContactSchema);
 
+// Email validation regex pattern
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 app.post("/contact", async (req, res) => {
   const { name, email, message } = req.body;
 
+  // Check for missing fields
   if (!name || !email || !message) {
     return res.status(400).json({ error: "Date lipsă" });
+  }
+
+  // Validate email format
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: "Format email invalid" });
   }
 
   try {
@@ -36,6 +45,4 @@ app.post("/contact", async (req, res) => {
   }
 });
 
-
 app.listen(5000, () => console.log("Server pornit pe port 5000"));
-
